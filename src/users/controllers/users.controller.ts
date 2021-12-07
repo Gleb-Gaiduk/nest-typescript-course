@@ -1,17 +1,28 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ErrorDto } from '../dto/error.dto';
+import { UsersErrorDto } from '../dto/error.dto';
+import { CreateUserDto, UserRemoveResponse } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
+import { UpdateUserDto } from './../dto/user.dto';
 
 @Controller('users')
 @ApiTags('Users')
+@ApiResponse({
+  status: 500,
+  description: 'Unexpected error',
+  type: UsersErrorDto,
+})
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -22,10 +33,11 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiQuery({ name: 'id', required: true })
   @ApiResponse({
     status: 404,
     description: 'Id was not found in data base',
-    type: ErrorDto,
+    type: UsersErrorDto,
   })
   async findOne(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findOne(+id);
@@ -37,15 +49,26 @@ export class UsersController {
     return user;
   }
 
-  create(createUserDto) {
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
 
-  update(id: string, updateUserDto) {
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  remove(id: string) {
-    return this.usersService.remove(+id);
+  @Delete(':id')
+  async remove(@Param(':id') id: number): Promise<UserRemoveResponse> {
+    const status = await this.usersService.remove(+id);
+
+    return {
+      status: status ? 'success' : 'error',
+      removedId: id,
+    };
   }
 }
