@@ -2,11 +2,17 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": [
-      "**/*.hbs",
-      "**/*.js",
-      "**/*.json"
-    ],
-    "watchAssets": true
+    "assets": ["**/*.hbs", "**/*.js", "**/*.json"],
+    "watchAssets": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "classValidatorShim": true,
+          "dtoFileNameSuffix": [".dto.ts", ".entity.ts"],
+          "controllerFileNameSuffix": ".controller.ts"
+        }
+      }
+    ]
   }
 }
