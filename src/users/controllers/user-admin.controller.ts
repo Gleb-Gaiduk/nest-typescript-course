@@ -4,18 +4,22 @@ import {
   NotFoundException,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersErrorDto } from '../dto/error.dto';
 import { User, UserRoleName } from '../entities/user.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UsersService } from '../services/users.service';
 
 @Controller('users/admin')
+@ApiTags('Users Admin')
 @ApiResponse({
   status: 500,
   description: 'Unexpected error',
   type: UsersErrorDto,
 })
+@UseGuards(JwtAuthGuard)
 export class UsersAdminController {
   // access usersService inside this controller
   constructor(private usersService: UsersService) {}
@@ -37,7 +41,7 @@ export class UsersAdminController {
     return userWithNewRole;
   }
 
-  @Delete()
+  @Delete('user/:userId/role/:roleName')
   @ApiParam({ name: 'roleName', enum: UserRoleName })
   async removeRole(
     @Param('userId') userId: string,
