@@ -1,5 +1,12 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from '@nestjs/common';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ErrorDto } from '../dto/error.dto';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
@@ -14,8 +21,20 @@ export class UsersController {
     return this.usersService.findAll(q);
   }
 
-  findOne(id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':id')
+  @ApiResponse({
+    status: 404,
+    description: 'Id was not found in data base',
+    type: ErrorDto,
+  })
+  async findOne(@Param('id') id: string): Promise<User> {
+    const user = await this.usersService.findOne(+id);
+
+    if (!user) {
+      throw new NotFoundException(`User of id ${id} was not found`);
+    }
+
+    return user;
   }
 
   create(createUserDto) {
