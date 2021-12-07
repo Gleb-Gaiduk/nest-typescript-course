@@ -1,19 +1,31 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { UsersService } from '../services/users.service';
 
 @Controller('users')
 @ApiTags('Users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
+
   @Get()
-  getUsers() {
-    return [
-      { id: 1, name: 'Hleb ' },
-      { id: 2, name: 'Piotr ' },
-    ];
+  @ApiQuery({ name: 'q', required: false })
+  findAll(@Query() q: string) {
+    return this.usersService.findAll(q);
   }
 
-  @Post()
-  addUsers() {
-    return { id: 22, name: 'New user' };
+  findOne(id: string) {
+    return this.usersService.findOne(+id);
+  }
+
+  create(createUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
+  update(id: string, updateUserDto) {
+    return this.usersService.update(+id, updateUserDto);
+  }
+
+  remove(id: string) {
+    return this.usersService.remove(+id);
   }
 }
