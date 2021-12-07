@@ -9,6 +9,7 @@ import {
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
+import { Roles } from '../decorators/roles.decorator';
 import { UsersErrorDto } from '../dto/error.dto';
 import { User, UserRoleName } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -22,6 +23,7 @@ import { UsersService } from '../services/users.service';
   type: UsersErrorDto,
 })
 @UseGuards(JwtAuthGuard)
+@Roles(UserRoleName.ROOT)
 export class UsersAdminController {
   // access usersService inside this controller
   constructor(private usersService: UsersService) {}
@@ -40,7 +42,6 @@ export class UsersAdminController {
         `Error wlile creating new role for a user with id ${userId}`,
       );
     }
-    console.log('user', user);
     return userWithNewRole;
   }
 
