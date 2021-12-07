@@ -14,6 +14,7 @@ export class JwtAuthGuard implements CanActivate {
       user: new User({
         name: 'Test mocked user',
       }),
+      token: 'dsfd23r',
     } as RequestPayload;
 
     return Boolean(request.payload);

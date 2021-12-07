@@ -34,4 +34,5 @@ export class TokenPayload {
 
 export class RequestPayload {
   user: User;
+  token: string;
 }

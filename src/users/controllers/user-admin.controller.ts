@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
+import { Payload } from '../decorators/payload.decorator';
 import { UsersErrorDto } from '../dto/error.dto';
 import { User, UserRoleName } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -48,6 +49,7 @@ export class UsersAdminController {
   async removeRole(
     @Param('userId') userId: string,
     @Param('roleName') roleName: UserRoleName,
+    @Payload('user') payload: any,
   ): Promise<User> {
     return this.usersService.removeRole(+userId, roleName);
   }
