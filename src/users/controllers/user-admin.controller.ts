@@ -7,6 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Auth } from '../decorators/auth.decorator';
 import { UsersErrorDto } from '../dto/error.dto';
 import { User, UserRoleName } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
@@ -29,6 +30,7 @@ export class UsersAdminController {
   async addRole(
     @Param('userId') userId: string,
     @Param('roleName') roleName: UserRoleName,
+    @Auth() user: User,
   ): Promise<User> {
     const userWithNewRole = await this.usersService.addRole(+userId, roleName);
 
@@ -37,7 +39,7 @@ export class UsersAdminController {
         `Error wlile creating new role for a user with id ${userId}`,
       );
     }
-
+    console.log('user', user);
     return userWithNewRole;
   }
 
