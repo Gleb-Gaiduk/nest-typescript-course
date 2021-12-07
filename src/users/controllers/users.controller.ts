@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 
 @Controller('users')
@@ -9,7 +10,7 @@ export class UsersController {
 
   @Get()
   @ApiQuery({ name: 'q', required: false })
-  findAll(@Query() q: string) {
+  async findAll(@Query() q: string): Promise<User[]> {
     return this.usersService.findAll(q);
   }
 
