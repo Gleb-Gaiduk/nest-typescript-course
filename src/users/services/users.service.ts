@@ -79,4 +79,17 @@ export class UsersService {
     this.users = this.users.filter((user) => user.id !== id);
     return true;
   }
+
+  async addRole(userId: number, roleName: UserRoleName): Promise<User> {
+    const user = await this.findOne(userId);
+    const role = this.roles.find((role) => role.name === roleName);
+    user.roles.push(role);
+    return user;
+  }
+
+  async removeRole(userId: number, roleName: UserRoleName) {
+    const user = await this.findOne(userId);
+    user.roles = user.roles.filter((role) => role.name !== roleName);
+    return user;
+  }
 }
