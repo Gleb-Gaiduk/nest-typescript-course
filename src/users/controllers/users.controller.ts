@@ -12,12 +12,13 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersErrorDto } from '../dto/error.dto';
 import { CreateUserDto, UserRemoveResponse } from '../dto/user.dto';
 import { User } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 import { UpdateUserDto } from './../dto/user.dto';
+import { UserByIdPipe } from './../pipes/user-by-id.pipe';
 
 @Controller('users')
 @ApiTags('Users')
@@ -74,5 +75,12 @@ export class UsersController {
       status: status ? 'success' : 'error',
       removedId: id,
     };
+  }
+
+  @Get('/name/:id')
+  @ApiParam({ name: 'id', type: Number })
+  // Here 'id' is passsed to UserByIdPipe (custom pipe) and then it returns user: User
+  getUserName(@Param('id', UserByIdPipe) user: User) {
+    return { user };
   }
 }
