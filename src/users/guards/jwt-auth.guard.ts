@@ -1,25 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { RequestPayload, User, UserRoleName } from './../entities/user.entity';
+import { UserRoleName } from './../entities/user.entity';
+import { AuthService } from './../services/auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private authService: AuthService) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    // TO DO validate api token from headers
-    request.payload = {
-      user: new User({
-        name: 'Test mocked user',
-        roles: [{ id: 1, name: UserRoleName.ADMIN }],
-      }),
-      token: 'dsfd23r',
-    } as RequestPayload;
+    const token = this.extractToken(request);
+
+    if (!token) return false;
+
+    request.token = await this.authService.decodeUserToken(token);
 
     if (!request.payload) {
       return false;
@@ -39,5 +34,10 @@ export class JwtAuthGuard implements CanActivate {
     );
 
     return requiredRoles.some((role) => userRoles.includes(role));
+  }
+
+  extractToken(request): string {
+    const token = request.heasers['authorization'];
+    return token ? token.replace('Bearer ', '') : '';
   }
 }
