@@ -1,5 +1,15 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Auth } from '../decorators/auth.decorator';
+import { User } from '../entities/user.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AuthService } from '../services/auth.service';
 import {
   AuthLoginDto,
@@ -41,5 +51,14 @@ export class AuthController {
     const token = await this.authService.encodeUserToken(user);
 
     return { token, user };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async me(@Auth() user: User) {
+    return {
+      user,
+    };
   }
 }
