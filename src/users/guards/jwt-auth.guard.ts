@@ -14,7 +14,7 @@ export class JwtAuthGuard implements CanActivate {
 
     if (!token) return false;
 
-    request.token = await this.authService.decodeUserToken(token);
+    request.payload = await this.authService.decodeUserToken(token);
 
     if (!request.payload) {
       return false;
