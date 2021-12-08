@@ -23,6 +23,8 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  app.useStaticAssets(configService.STORAGE_ASSETS);
+
   // SWAGGER SETUP
   const config = new DocumentBuilder()
     .setTitle('Mój Projekt w Nest')
