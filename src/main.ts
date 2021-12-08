@@ -9,6 +9,7 @@ import {
   SwaggerDocumentOptions,
   SwaggerModule,
 } from '@nestjs/swagger';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { ConfigService } from './config';
 import { expressApp } from './express/server';
@@ -23,7 +24,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  // Static files
   app.useStaticAssets(configService.STORAGE_ASSETS);
+
+  // HTML views
+  app.setBaseViewsDir(join(__dirname, 'views'));
+  app.setViewEngine('hbs');
 
   // SWAGGER SETUP
   const config = new DocumentBuilder()

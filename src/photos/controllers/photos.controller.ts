@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Render,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +16,23 @@ import { PhotosService } from '../services/photos.service';
 @ApiTags('Photos')
 export class PhotosController {
   constructor(public photosService: PhotosService) {}
+
+  @Get()
+  @Render('photos/index')
+  index() {
+    const photos = [
+      {
+        humbPath: '/thumbs/63612c1e5b6d310740742dea92e3ff01.png',
+        downloadPath: '/photos/63612c1e5b6d310740742dea92e3ff01.png',
+      },
+      {
+        humbPath: '/thumbs/63612c1e5b6d310740742dea92e3ff01.png',
+        downloadPath: '/photos/63612c1e5b6d310740742dea92e3ff01.png',
+      },
+    ];
+
+    return { photos };
+  }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
