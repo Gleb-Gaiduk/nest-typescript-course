@@ -20,7 +20,10 @@ export class AuthController {
   @Post('register')
   async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
     // TO DO hash password
-    const user = await this.usersService.create(data);
+    const user = await this.usersService.create({
+      ...data,
+      password: this.authService.encodePassword(data.password),
+    });
     return {
       user,
     };
