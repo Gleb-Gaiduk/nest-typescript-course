@@ -1,10 +1,12 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
   UnauthorizedException,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -61,9 +63,10 @@ export class AuthController {
     return { token, user };
   }
 
-  @Get('me')
+  @Get('auth/me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @UseInterceptors(ClassSerializerInterceptor)
   async me(@Auth() user: User) {
     return {
       user,

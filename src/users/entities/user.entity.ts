@@ -1,3 +1,5 @@
+import { Exclude } from 'class-transformer';
+
 export enum UserRoleName {
   ADMIN = 'admin',
   ROOT = 'root',
@@ -16,6 +18,9 @@ export class User {
   id?: number;
   name: string;
   email?: string;
+
+  // While transformation from class to response json
+  @Exclude({ toPlainOnly: true })
   password?: string;
   roles?: UserRole[];
 
