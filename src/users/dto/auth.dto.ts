@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user.entity';
 
 export class AuthLoginDto {
-  @ApiProperty({ example: 'Justyna@gmail.com' })
+  @ApiProperty({ example: 'Piotr' })
   email: string;
-  @ApiProperty({ example: 'dfsdf2fds' })
+  @ApiProperty({ example: 'piotr@myflow.pl' })
   password: string;
 }
 
