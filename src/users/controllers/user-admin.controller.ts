@@ -6,7 +6,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
 import { Payload } from '../decorators/payload.decorator';
 import { Roles } from '../decorators/roles.decorator';
@@ -29,6 +29,7 @@ export class UsersAdminController {
   constructor(private usersService: UsersService) {}
 
   @Post('user/:userId/role/:roleName')
+  @ApiBearerAuth()
   @ApiParam({ name: 'roleName', enum: UserRoleName })
   async addRole(
     @Param('userId') userId: string,
