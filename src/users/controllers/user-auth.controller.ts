@@ -30,6 +30,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @UsePipes(new ValidationPipe({ transform: true }))
   async register(@Body() data: AuthRegisterDto): Promise<AuthRegisterResponse> {
     // TO DO hash password
     const user = await this.usersService.create({
@@ -42,10 +43,12 @@ export class AuthController {
   }
 
   @Post('login')
-  @UsePipes(new ValidationPipe({ transform: false }))
-  // @UsePipes(new ValidationPipe({ transform: true }))
+  // @UsePipes(new ValidationPipe({ transform: false }))
+  @UsePipes(new ValidationPipe({ transform: true }))
   // true - you will have AuthLoginDto class instanse inside  login method but not a simple object
   async login(@Body() credentials: AuthLoginDto): Promise<AuthLoginResponse> {
+    // console.log(credentials.createdAt.getTime());
+
     const user = await this.authService.findByCredentials(
       credentials.email,
       credentials.password,

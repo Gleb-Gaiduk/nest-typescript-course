@@ -14,7 +14,7 @@ export class AuthLoginDto {
   @IsString()
   password: string;
 
-  @Transform((value) => new Date(v.value))
+  @Transform((value) => new Date(value.value))
   createdAt?: Date;
 }
 
@@ -25,10 +25,15 @@ export class AuthLoginResponse {
 
 export class AuthRegisterDto {
   @ApiProperty({ example: 'Piotr' })
+  @IsNotEmpty()
   name: string;
+
   @ApiProperty({ example: 'Justyna@gmail.com' })
+  @IsEmail()
   email: string;
+
   @ApiProperty({ example: '123' })
+  @MinLength(3)
   password: string;
 }
 
