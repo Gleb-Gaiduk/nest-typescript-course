@@ -5,9 +5,10 @@ import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
 import { PerformanceInterceptor } from './users/interceptors/performance.interceptor';
 import { UsersModule } from './users/users.module';
+import { PhotosModule } from './photos/photos.module';
 
 @Module({
-  imports: [UsersModule, ConfigModule],
+  imports: [UsersModule, ConfigModule, PhotosModule],
   controllers: [AppController],
   providers: [
     AppService,
