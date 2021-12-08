@@ -5,6 +5,8 @@ import {
   Post,
   UnauthorizedException,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../decorators/auth.decorator';
@@ -40,6 +42,9 @@ export class AuthController {
   }
 
   @Post('login')
+  @UsePipes(new ValidationPipe({ transform: false }))
+  // @UsePipes(new ValidationPipe({ transform: true }))
+  // true - you will have AuthLoginDto class instanse inside  login method but not a simple object
   async login(@Body() credentials: AuthLoginDto): Promise<AuthLoginResponse> {
     const user = await this.authService.findByCredentials(
       credentials.email,
