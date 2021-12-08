@@ -5,9 +5,12 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersErrorDto } from '../dto/error.dto';
@@ -23,6 +26,7 @@ import { UpdateUserDto } from './../dto/user.dto';
   description: 'Unexpected error',
   type: UsersErrorDto,
 })
+@UsePipes(new ValidationPipe({ transform: true }))
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -39,7 +43,7 @@ export class UsersController {
     description: 'Id was not found in data base',
     type: UsersErrorDto,
   })
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id', ParseIntPipe) id: string): Promise<User> {
     const user = await this.usersService.findOne(+id);
 
     if (!user) {
@@ -56,8 +60,8 @@ export class UsersController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Param('id', ParseIntPipe, ValidationPipe) id: string,
+    @Body(ValidationPipe) updateUserDto: UpdateUserDto,
   ): Promise<User> {
     return this.usersService.update(+id, updateUserDto);
   }
