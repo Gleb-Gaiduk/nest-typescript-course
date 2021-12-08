@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { mkdir, stat } from 'fs/promises';
 import { resolve } from 'path';
 const joinUrl = (...paths) => paths.join('/');
 
 @Injectable()
-export class ConfigService {
+export class ConfigService implements OnModuleInit {
   readonly DEBUG = process.env.DEBUG;
   readonly PORT = process.env.PORT;
   readonly DOMAIN = process.env.DOMAIN;
@@ -24,4 +25,14 @@ export class ConfigService {
   );
 
   constructor() {}
+
+  async onModuleInit() {
+    // Make sure storage exist or throw error if not
+    await stat(this.STORAGE_DIR);
+    // Create folders
+    await mkdir(this.STORAGE_TMP, { recursive: true });
+    await mkdir(this.STORAGE_PHOTOS, { recursive: true });
+    await mkdir(this.STORAGE_ASSETS, { recursive: true });
+    await mkdir(this.STORAGE_THUMBS, { recursive: true });
+  }
 }

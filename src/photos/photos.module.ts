@@ -6,6 +6,7 @@ import { PhotosService } from './services/photos.service';
 
 @Module({
   imports: [
+    ConfigModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -8,10 +8,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileUploadDto } from '../dto/photos.dto';
+import { PhotosService } from '../services/photos.service';
 
 @Controller('photos')
 @ApiTags('Photos')
 export class PhotosController {
+  constructor(public photosService: PhotosService) {}
+
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
@@ -20,6 +23,7 @@ export class PhotosController {
     @UploadedFile() file: Express.Multer.File,
     @Body() body: any,
   ) {
-    return { file, body };
+    const photo = await this.photosService.create(file);
+    return { photo, file, body };
   }
 }
