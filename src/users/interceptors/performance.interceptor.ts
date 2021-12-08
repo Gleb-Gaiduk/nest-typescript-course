@@ -4,13 +4,15 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { map, Observable, tap } from 'rxjs';
+import { fromEvent, map, Observable, takeUntil, tap } from 'rxjs';
 
 @Injectable()
 export class PerformanceInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
     // TO DO modify request
+
+    const close$ = fromEvent(request, 'close');
 
     console.time('Request duration');
 
@@ -20,6 +22,7 @@ export class PerformanceInterceptor implements NestInterceptor {
       // res - receiving from controller
       map((res) => res),
       tap((res) => console.timeEnd('Request duration')),
+      takeUntil(close$),
     );
   }
 }

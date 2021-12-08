@@ -1,9 +1,10 @@
 import {
   Controller,
   Delete,
-  NotFoundException,
+  InternalServerErrorException,
   Param,
   Post,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { UsersErrorDto } from '../dto/error.dto';
 import { User, UserRoleName } from '../entities/user.entity';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UsersService } from '../services/users.service';
+import { UserExceptionFilter } from './../filters/user-exception.filter';
 
 @Controller('users/admin')
 @ApiTags('Users Admin')
@@ -24,6 +26,7 @@ import { UsersService } from '../services/users.service';
 })
 @UseGuards(JwtAuthGuard)
 @Roles(UserRoleName.ROOT)
+@UseFilters(UserExceptionFilter)
 export class UsersAdminController {
   // access usersService inside this controller
   constructor(private usersService: UsersService) {}
@@ -39,9 +42,7 @@ export class UsersAdminController {
     const userWithNewRole = await this.usersService.addRole(+userId, roleName);
 
     if (!userWithNewRole) {
-      throw new NotFoundException(
-        `Error wlile creating new role for a user with id ${userId}`,
-      );
+      throw new InternalServerErrorException('TEST EXCEPTION');
     }
     return userWithNewRole;
   }
