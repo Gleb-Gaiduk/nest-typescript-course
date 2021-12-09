@@ -63,13 +63,11 @@ export class AuthController {
     return { token, user };
   }
 
-  @Get('auth/me')
+  @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @UseInterceptors(ClassSerializerInterceptor)
   async me(@Auth() user: User) {
-    return {
-      user,
-    };
+    return user;
   }
 }
