@@ -70,7 +70,7 @@ export class PhotosController {
     @Body() body: any,
   ) {
     const photo = await this.photosService.create(file);
-    const thumbs = await this.photosService.createThumbs(photo.fileName);
+    const thumbs = await this.photosService.createThumbs(photo.filename);
     return { photo, file, body };
   }
 }

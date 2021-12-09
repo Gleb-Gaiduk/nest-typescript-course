@@ -25,6 +25,8 @@ export class ConfigService implements OnModuleInit {
     'photos/download',
   );
 
+  readonly DB_NAME = resolve(this.STORAGE_DIR, 'nest.db');
+
   constructor() {}
 
   async onModuleInit() {
