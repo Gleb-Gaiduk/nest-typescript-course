@@ -1,5 +1,4 @@
 import {
-  ArgumentMetadata,
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -13,7 +12,7 @@ export class UserByIdPipe implements PipeTransform {
   // Access to UsersService via dependency injection
   constructor(private usersService: UsersService) {}
 
-  async transform(value: any, metadata: ArgumentMetadata): Promise<User> {
+  async transform(value: any): Promise<User> {
     const id = parseInt(value, 10);
 
     if (!id) {
