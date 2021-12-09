@@ -9,7 +9,7 @@ import {
   Res,
   UploadedFile,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -48,7 +48,7 @@ export class PhotosController {
   ) {
     const file = join(this.config.STORAGE_PHOTOS, filename);
 
-    if (!(await stat(file).catch(err => return null))) {
+    if (!(await stat(file).catch((err) => null))) {
       throw new NotFoundException(`File "${filename} doesn't exist`);
     }
 
