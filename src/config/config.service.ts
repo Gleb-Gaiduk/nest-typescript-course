@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { mkdir, stat } from 'fs/promises';
 import { resolve } from 'path';
-const joinUrl = (...paths) => paths.join('/');
+
+export const joinUrl = (...paths) => paths.join('/');
 
 @Injectable()
 export class ConfigService implements OnModuleInit {

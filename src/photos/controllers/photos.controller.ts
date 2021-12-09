@@ -2,36 +2,63 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
+  Param,
   Post,
   Render,
+  Res,
   UploadedFile,
-  UseInterceptors,
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { stat } from 'fs/promises';
+import { join } from 'path';
+import { Auth } from '../../users/decorators/auth.decorator';
+import { User } from '../../users/entities/user.entity';
+import { JwtAuthGuard } from '../../users/guards/jwt-auth.guard';
 import { FileUploadDto } from '../dto/photos.dto';
 import { PhotosService } from '../services/photos.service';
+import { ConfigService } from './../../config/config.service';
 
 @Controller('photos')
 @ApiTags('Photos')
 export class PhotosController {
-  constructor(public photosService: PhotosService) {}
+  constructor(
+    public photosService: PhotosService,
+    private config: ConfigService,
+  ) {}
 
   @Get()
   @Render('photos/index')
-  index() {
-    const photos = [
-      {
-        humbPath: '/thumbs/63612c1e5b6d310740742dea92e3ff01.png',
-        downloadPath: '/photos/63612c1e5b6d310740742dea92e3ff01.png',
-      },
-      {
-        humbPath: '/thumbs/63612c1e5b6d310740742dea92e3ff01.png',
-        downloadPath: '/photos/63612c1e5b6d310740742dea92e3ff01.png',
-      },
-    ];
-
+  async index() {
+    const photos = await this.photosService.getUserPhotos();
     return { photos };
+  }
+
+  @Get('download/:filename')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async download(
+    @Param('filename') filename: string,
+    @Res() res: Response,
+    @Auth() user: User,
+  ) {
+    const file = join(this.config.STORAGE_PHOTOS, filename);
+
+    if (!(await stat(file).catch(err => return null))) {
+      throw new NotFoundException(`File "${filename} doesn't exist`);
+    }
+
+    res.download(file, filename, (err) => {
+      if (err) {
+        // handle error, file is not downloaded / interrupted
+      } else {
+        // success
+      }
+    });
   }
 
   @Post('upload')

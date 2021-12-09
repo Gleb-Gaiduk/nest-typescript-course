@@ -5,6 +5,7 @@ import { ConfigService } from './../config/config.service';
 import { UsersAdminController } from './controllers/user-admin.controller';
 import { AuthController } from './controllers/user-auth.controller';
 import { UsersController } from './controllers/users.controller';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './services/auth.service';
 import { UsersService } from './services/users.service';
 
@@ -21,7 +22,7 @@ import { UsersService } from './services/users.service';
     }),
   ],
   controllers: [UsersController, AuthController, UsersAdminController],
-  providers: [UsersService, AuthService],
-  exports: [UsersService],
+  providers: [UsersService, AuthService, JwtAuthGuard],
+  exports: [UsersService, AuthService, JwtAuthGuard],
 })
 export class UsersModule {}
